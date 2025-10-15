@@ -5,11 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class DelimiterTest {
+public class DefaultDelimiterTest {
 
     @Test
     void 기본_구분자로_분리() {
