@@ -1,6 +1,7 @@
 package calculator;
 
 import calculator.domain.Delimiter;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -32,13 +33,6 @@ public class DefaultDelimiterTest {
     }
 
     @Test
-    void 아무_문자열_입력시_예외() {
-        Delimiter defaultDelimiter = new Delimiter();
-        List<String> tokens = defaultDelimiter.tokenize("1, 2 :3 ");
-        assertThat(tokens).containsExactly("123");
-    }
-
-    @Test
     void 기본_구분자_사이에_공백이_있으면_예외() {
         Delimiter d = new Delimiter();
         assertThatThrownBy(() -> d.tokenize("1, 2:3"))
@@ -48,6 +42,21 @@ public class DefaultDelimiterTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> d.tokenize("1,2:3 "))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 연속_선행_후행_구분자_예외() {
+        Delimiter d = new Delimiter();
+        AssertionsForClassTypes.assertThatThrownBy(() -> d.tokenize("1;;2"))
+                .isInstanceOf(IllegalArgumentException.class);
+        AssertionsForClassTypes.assertThatThrownBy(() -> d.tokenize("1,,2"))
+                .isInstanceOf(IllegalArgumentException.class);
+        AssertionsForClassTypes.assertThatThrownBy(() -> d.tokenize(";1;2"))
+                .isInstanceOf(IllegalArgumentException.class);
+        AssertionsForClassTypes.assertThatThrownBy(() -> d.tokenize("1;2;"))
+                .isInstanceOf(IllegalArgumentException.class);
+        AssertionsForClassTypes.assertThatThrownBy(() -> d.tokenize("1,|2"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

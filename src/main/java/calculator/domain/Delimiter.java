@@ -8,6 +8,7 @@ public class Delimiter {
     private static final String BASE_DELIMS = ",:";
     private static final String DEFAULT_DELIMITER = "[" + BASE_DELIMS + "]";
     private static final String VALIDATE_DEFAULT = ".*[^0-9" + BASE_DELIMS + "].*";
+    private static final String VALIDATE_DELIMITER_SEQUENCE = "^\\d+(?:[" + BASE_DELIMS + "]\\d+)*$";
     private static final String CUSTOM_DELIMITER_START = "//";
     private static final String CUSTOM_DELIMITER_END = "\\n";
     private static final int CUSTOM_DELIMITER_START_INDEX = 2;
@@ -27,6 +28,7 @@ public class Delimiter {
         if (inputs.matches(VALIDATE_DEFAULT)) {
             throw new IllegalArgumentException("기본 구분자는 쉼표(,) 또는 콜론(:)만 허용됩니다.");
         }
+        validateDelimiterSequence(inputs);
         return Arrays.stream(inputs.split(DEFAULT_DELIMITER)).toList();
     }
 
@@ -36,10 +38,17 @@ public class Delimiter {
         String numbersPart = validateNumberPart(inputs, lnIndex);
         String normalized =  normalizeDelimiters(numbersPart, customToken);
 
+        validateDelimiterSequence(normalized);
         if (normalized.matches(VALIDATE_DEFAULT)) {
             throw new IllegalArgumentException("기본 구분자(쉼표(,) 또는 콜론(:))와 커스텀 구분자(" + customToken +")만 허용됩니다.");
         }
         return Arrays.stream(normalized.split(DEFAULT_DELIMITER)).toList();
+    }
+
+    private void validateDelimiterSequence(String inputs) {
+        if (!inputs.matches(VALIDATE_DELIMITER_SEQUENCE)) {
+            throw new IllegalArgumentException("구분자 사용이 올바르지 않습니다.");
+        }
     }
 
     private int validateCustomFormat(String inputs) {

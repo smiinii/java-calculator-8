@@ -61,4 +61,19 @@ public class CustomDelimiterTest {
         assertThatThrownBy(() -> d.tokenize("//;\\n"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 연속_선행_후행_구분자_예외() {
+        Delimiter d = new Delimiter();
+        assertThatThrownBy(() -> d.tokenize("//;\\n1;;2"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> d.tokenize("//;\\n1,,2"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> d.tokenize("//;\\n;1;2"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> d.tokenize("//;\\n1;2;"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> d.tokenize("//|\\n1,|2"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
