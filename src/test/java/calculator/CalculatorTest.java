@@ -1,15 +1,53 @@
 package calculator;
 
+
 import calculator.domain.Calculator;
+import calculator.domain.Delimiter;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class CalculatorTest {
 
     @Test
     void 빈문자열을_입력하면_0을_반환한다() {
-        Calculator c = new Calculator();
-        assertThat(c.calculate("")).isEqualTo(0);
+        Delimiter delimiter = new Delimiter();
+        Calculator calculator = new Calculator(delimiter);
+        assertThat(calculator.calculate("")).isEqualTo(0);
     }
+
+    @Test
+    void 기본_구분자로_합산된다() {
+        Delimiter delimiter = new Delimiter();
+        Calculator calculator = new Calculator(delimiter);
+        assertThat(calculator.calculate("1,2,3")).isEqualTo(6);
+        assertThat(calculator.calculate("4:5:6")).isEqualTo(15);
+        assertThat(calculator.calculate("1,2:3")).isEqualTo(6);
+    }
+
+    @Test
+    void 커스텀_구분자로_합산된다() {
+        Delimiter delimiter = new Delimiter();
+        Calculator calculator = new Calculator(delimiter);
+        assertThat(calculator.calculate("//;\\n1;2;3")).isEqualTo(6);
+        assertThat(calculator.calculate("//|\\n4|5|6")).isEqualTo(15);
+    }
+
+    @Test
+    void 숫자가_아닌_값이_포함되면_예외() {
+        Delimiter delimiter = new Delimiter();
+        Calculator calculator = new Calculator(delimiter);
+        assertThatThrownBy(() -> calculator.calculate("1,a,3"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 음수가_포함되면_예외() {
+        Delimiter delimiter = new Delimiter();
+        Calculator calculator = new Calculator(delimiter);
+        assertThatThrownBy(() -> calculator.calculate("1,-2,3"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
