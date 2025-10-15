@@ -18,10 +18,7 @@ public class Delimiter {
 
     private List<String> defaultTokenize(String inputs) {
         validateDefaultOnly(inputs);
-        return Arrays.stream(inputs.split(DEFAULT_DELIMITER))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .toList();
+        return Arrays.stream(inputs.split(DEFAULT_DELIMITER)).toList();
     }
 
     private boolean isDefault(String inputs) {

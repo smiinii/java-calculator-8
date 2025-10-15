@@ -35,7 +35,20 @@ public class DelimiterTest {
     @Test
     void 아무_문자열_입력시_예외() {
         Delimiter defaultDelimiter = new Delimiter();
-        assertThatThrownBy(() -> defaultDelimiter.tokenize("fjdifre"))
+        List<String> tokens = defaultDelimiter.tokenize("1, 2 :3 ");
+        assertThat(tokens).containsExactly("123");
+    }
+
+    @Test
+    void 기본_구분자_사이에_공백이_있으면_예외() {
+        Delimiter d = new Delimiter();
+        assertThatThrownBy(() -> d.tokenize("1, 2:3"))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> d.tokenize(" 1,2:3"))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> d.tokenize("1,2:3 "))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
