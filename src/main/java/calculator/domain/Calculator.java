@@ -1,7 +1,5 @@
 package calculator.domain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Calculator {
@@ -18,8 +16,8 @@ public class Calculator {
         }
         List<String> tokens = delimiter.tokenize(inputs);
         return tokens.stream()
-                .map(Number::new)
-                .mapToInt(Number::getNumber)
+                .map(Digit::new)
+                .mapToInt(Digit::value)
                 .sum();
     }
 }

@@ -1,10 +1,10 @@
 package calculator.domain;
 
-public class Number {
+public class Digit {
 
     private final int number;
 
-    public Number(String number) {
+    public Digit(String number) {
         validateNumber(number);
         int num = Integer.parseInt(number);
         validateNotNegative(num);
@@ -23,7 +23,7 @@ public class Number {
         }
     }
 
-    public int getNumber() {
+    public int value() {
         return number;
     }
 
