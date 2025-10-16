@@ -1,5 +1,7 @@
 package calculator.domain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Calculator {
@@ -15,30 +17,15 @@ public class Calculator {
             return 0;
         }
         List<String> tokens = delimiter.tokenize(inputs);
-        return sumTokens(tokens);
+        List<Number> numbers = tokens.stream().map(Number::new).toList();
+        return sumNumbers(numbers);
     }
 
-    private int sumTokens(List<String> tokens) {
+    private int sumNumbers(List<Number> numbers) {
         int sum = 0;
-
-        for (String token : tokens) {
-            validateNumber(token);
-            int numbers = Integer.parseInt(token);
-            validateNotNegative(numbers);
-            sum += numbers;
+        for (Number token : numbers) {
+            sum += token.getNumber();
         }
         return sum;
-    }
-
-    private void validateNumber(String token) {
-        if (!token.matches("\\d+")) {
-            throw new IllegalArgumentException("숫자가 아닌 값이 포함되어 있습니다");
-        }
-    }
-
-    private void validateNotNegative(int numbers) {
-        if (numbers < 0) {
-            throw new IllegalArgumentException("음수는 허용되지 않습니다");
-        }
     }
 }
