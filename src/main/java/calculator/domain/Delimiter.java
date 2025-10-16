@@ -11,7 +11,6 @@ public class Delimiter {
     private static final String VALIDATE_DELIMITER_SEQUENCE = "^\\d+(?:[" + BASE_DELIMS + "]\\d+)*$";
     private static final String CUSTOM_DELIMITER_START = "//";
     private static final String CUSTOM_DELIMITER_END = "\\n";
-    private static final int CUSTOM_DELIMITER_START_INDEX = 2;
 
     public List<String> tokenize(String inputs) {
         if (isDefault(inputs)) {
@@ -63,10 +62,12 @@ public class Delimiter {
     }
 
     private char validateCustomDelimiter(String inputs, int lnIndex) {
-        String customDelimiter = inputs.substring(CUSTOM_DELIMITER_START_INDEX, lnIndex);
+        int start = CUSTOM_DELIMITER_START.length();
+        String customDelimiter = inputs.substring(start, lnIndex);
         if (customDelimiter.length() != 1) {
             throw new IllegalArgumentException("커스텀 구분자는 한 글자만 허용됩니다.");
         }
+
         char customToken = customDelimiter.charAt(0);
         if (Character.isWhitespace(customToken) || Character.isDigit(customToken)) {
             throw new IllegalArgumentException("커스텀 구분자로 공백과 숫자는 허용되지 않습니다.");
