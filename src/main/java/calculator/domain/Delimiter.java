@@ -10,7 +10,7 @@ public class Delimiter {
     private static final String CUSTOM_HEADER_END = "\\n";
 
     private static final String HAS_NON_DEFAULT_PUNCT =
-            ".*[\\p{Punct}&&[^" + DEFAULT_DELIMS + "]].*";
+            ".*[\\p{Punct}&&[^" + DEFAULT_DELIMS + "\\-]].*";
 
     private static final String DELIMITER_CLASS = "[" + DEFAULT_DELIMS + "]";
     private static final String TOKEN = "[^\\s" + DEFAULT_DELIMS + "]+";
