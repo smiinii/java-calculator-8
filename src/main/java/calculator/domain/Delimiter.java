@@ -33,13 +33,13 @@ public class Delimiter {
 
     private List<String> splitByCustomDelimiter(String inputs) {
         int lnIndex = validateCustomFormat(inputs);
-        char customToken = extractCustomDelimiter(inputs, lnIndex);
+        char customDelimiter = extractCustomDelimiter(inputs, lnIndex);
         String numbersPart = extractNumberPart(inputs, lnIndex);
-        String normalized =  normalizeDelimiters(numbersPart, customToken);
+        String normalized =  normalizeDelimiters(numbersPart, customDelimiter);
 
         validateDelimiterSequence(normalized);
         if (normalized.matches(VALIDATE_DEFAULT)) {
-            throw new IllegalArgumentException("기본 구분자(쉼표(" + BASE_DELIMS + ")와 커스텀 구분자(" + customToken +")만 허용됩니다.");
+            throw new IllegalArgumentException("기본 구분자(쉼표(" + BASE_DELIMS + ")와 커스텀 구분자(" + customDelimiter +")만 허용됩니다.");
         }
         return Arrays.stream(normalized.split(DEFAULT_DELIMITER)).toList();
     }
