@@ -16,8 +16,8 @@ public class Calculator {
         }
         List<String> tokens = delimiter.detectAndSplit(inputs);
         return tokens.stream()
-                .map(Digit::new)
-                .mapToInt(Digit::value)
+                .map(Operand::new)
+                .mapToInt(Operand::value)
                 .sum();
     }
 }

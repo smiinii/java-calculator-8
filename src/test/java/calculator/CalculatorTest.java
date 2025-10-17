@@ -50,5 +50,13 @@ public class CalculatorTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void 숫자의_자릿수는_상관_없다() {
+        Delimiter delimiter = new Delimiter();
+        Calculator calculator = new Calculator(delimiter);
+        assertThat(calculator.calculate("11,2,3")).isEqualTo(16);
+        assertThat(calculator.calculate("4:15:6")).isEqualTo(25);
+        assertThat(calculator.calculate("1,2:113")).isEqualTo(116);
+    }
 
 }
