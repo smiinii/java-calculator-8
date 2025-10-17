@@ -5,12 +5,18 @@ import java.util.List;
 
 public class Delimiter {
 
-    private static final String BASE_DELIMS = ",:";
-    private static final String DEFAULT_DELIMITER = "[" + BASE_DELIMS + "]";
-    private static final String VALIDATE_DEFAULT = ".*[^0-9" + BASE_DELIMS + "].*";
-    private static final String VALIDATE_DELIMITER_SEQUENCE = "^\\d+(?:[" + BASE_DELIMS + "]\\d+)*$";
-    private static final String CUSTOM_DELIMITER_START = "//";
-    private static final String CUSTOM_DELIMITER_END = "\\n";
+    private static final String DEFAULT_DELIMS = ",:";
+    private static final String CUSTOM_HEADER_START = "//";
+    private static final String CUSTOM_HEADER_END = "\\n";
+
+    private static final String HAS_NON_DEFAULT_PUNCT =
+            ".*[\\p{Punct}&&[^" + DEFAULT_DELIMS + "]].*";
+
+    private static final String DELIMITER_CLASS = "[" + DEFAULT_DELIMS + "]";
+    private static final String TOKEN = "[^\\s" + DEFAULT_DELIMS + "]+";
+    private static final String WELL_FORMED_SEQUENCE =
+            "^" + TOKEN + "(?:" + DELIMITER_CLASS + TOKEN + ")*$";
+
 
     public List<String> detectAndSplit(String inputs) {
         if (isDefault(inputs)) {
@@ -20,49 +26,56 @@ public class Delimiter {
     }
 
     private boolean isDefault(String inputs) {
-        return !inputs.startsWith("//");
+        return !inputs.startsWith(CUSTOM_HEADER_START);
     }
 
     private List<String> splitByDefaultDelimiter(String inputs) {
-        if (inputs.matches(VALIDATE_DEFAULT)) {
-            throw new IllegalArgumentException("기본 구분자(" + BASE_DELIMS + ")만 허용됩니다.");
-        }
-        validateDelimiterSequence(inputs);
-        return Arrays.stream(inputs.split(DEFAULT_DELIMITER)).toList();
+        assertOnlyDefaultDelims(inputs);
+        assertWellFormedSequence(inputs);
+        return Arrays.stream(inputs.split(DELIMITER_CLASS)).toList();
     }
 
     private List<String> splitByCustomDelimiter(String inputs) {
-        int lnIndex = validateCustomFormat(inputs);
+        validateCustomHeaderStart(inputs);
+        int lnIndex = findHeaderEndOrThrow(inputs);
+
         char customDelimiter = extractCustomDelimiter(inputs, lnIndex);
-        String numbersPart = extractNumberPart(inputs, lnIndex);
-        String normalized =  normalizeDelimiters(numbersPart, customDelimiter);
+        String body = extractBody(inputs, lnIndex);
+        String normalized =  normalizeDelimiters(body, customDelimiter);
 
-        validateDelimiterSequence(normalized);
-        if (normalized.matches(VALIDATE_DEFAULT)) {
-            throw new IllegalArgumentException("기본 구분자(쉼표(" + BASE_DELIMS + ")와 커스텀 구분자(" + customDelimiter +")만 허용됩니다.");
-        }
-        return Arrays.stream(normalized.split(DEFAULT_DELIMITER)).toList();
+        assertOnlyDefaultDelims(normalized);
+        assertWellFormedSequence(normalized);
+        return Arrays.stream(normalized.split(DELIMITER_CLASS)).toList();
     }
 
-    private void validateDelimiterSequence(String inputs) {
-        if (!inputs.matches(VALIDATE_DELIMITER_SEQUENCE)) {
-            throw new IllegalArgumentException("구분자 사용이 올바르지 않습니다.");
+    private void assertOnlyDefaultDelims(String inputs) {
+        if(inputs.matches(HAS_NON_DEFAULT_PUNCT)) {
+            throw new IllegalArgumentException("정해진 구분자 외에 구분자는 사용할 수 없습니다.");
         }
     }
 
-    private int validateCustomFormat(String inputs) {
-        if (!inputs.startsWith(CUSTOM_DELIMITER_START)) {
-            throw new IllegalArgumentException("커스텀 형식은 '" + CUSTOM_DELIMITER_START + "'으로 시작해야 합니다.");
+    private void assertWellFormedSequence(String inputs) {
+        if (!inputs.matches(WELL_FORMED_SEQUENCE)) {
+            throw new IllegalArgumentException("구분자 사용이 올바르지 않습니다. (선행/후행/연속 금지)");
         }
-        int lnIndex = inputs.indexOf(CUSTOM_DELIMITER_END);
+    }
+
+    private void validateCustomHeaderStart(String input) {
+        if (!input.startsWith(CUSTOM_HEADER_START)) {
+            throw new IllegalArgumentException("커스텀 형식은 '" + CUSTOM_HEADER_START + "'으로 시작해야 합니다.");
+        }
+    }
+
+    private int findHeaderEndOrThrow(String input) {
+        int lnIndex = input.indexOf(CUSTOM_HEADER_END);
         if (lnIndex < 0) {
-            throw new IllegalArgumentException("커스텀 형식은 '\n'이 존재해야 합니다.");
+            throw new IllegalArgumentException("커스텀 형식은 '\\n'이 존재해야 합니다.");
         }
         return lnIndex;
     }
 
     private char extractCustomDelimiter(String inputs, int lnIndex) {
-        int start = CUSTOM_DELIMITER_START.length();
+        int start = CUSTOM_HEADER_START.length();
         String customDelimiter = inputs.substring(start, lnIndex);
         if (customDelimiter.length() != 1) {
             throw new IllegalArgumentException("커스텀 구분자는 한 글자만 허용됩니다.");
@@ -75,16 +88,16 @@ public class Delimiter {
         return customToken;
     }
 
-    private String extractNumberPart(String inputs, int lnIndex) {
-        int startNumberPart = lnIndex + CUSTOM_DELIMITER_END.length();
+    private String extractBody(String inputs, int lnIndex) {
+        int startNumberPart = lnIndex + CUSTOM_HEADER_END.length();
         if (startNumberPart == inputs.length()) {
-            throw new IllegalArgumentException("숫자 부분이 비어있습니다.");
+            throw new IllegalArgumentException("본문이 비어있습니다.");
         }
         return inputs.substring(startNumberPart);
     }
 
     private String normalizeDelimiters(String numbersPart, char customToken) {
-        char defaultDelimiter = BASE_DELIMS.charAt(0);
+        char defaultDelimiter = DEFAULT_DELIMS.charAt(0);
         return numbersPart.replace(customToken, defaultDelimiter);
     }
 }
