@@ -25,7 +25,7 @@ public class Delimiter {
 
     private List<String> defaultTokenize(String inputs) {
         if (inputs.matches(VALIDATE_DEFAULT)) {
-            throw new IllegalArgumentException("기본 구분자는 쉼표(,) 또는 콜론(:)만 허용됩니다.");
+            throw new IllegalArgumentException("기본 구분자(" + BASE_DELIMS + ")만 허용됩니다.");
         }
         validateDelimiterSequence(inputs);
         return Arrays.stream(inputs.split(DEFAULT_DELIMITER)).toList();
@@ -39,7 +39,7 @@ public class Delimiter {
 
         validateDelimiterSequence(normalized);
         if (normalized.matches(VALIDATE_DEFAULT)) {
-            throw new IllegalArgumentException("기본 구분자(쉼표(,) 또는 콜론(:))와 커스텀 구분자(" + customToken +")만 허용됩니다.");
+            throw new IllegalArgumentException("기본 구분자(쉼표(" + BASE_DELIMS + ")와 커스텀 구분자(" + customToken +")만 허용됩니다.");
         }
         return Arrays.stream(normalized.split(DEFAULT_DELIMITER)).toList();
     }
@@ -52,7 +52,7 @@ public class Delimiter {
 
     private int validateCustomFormat(String inputs) {
         if (!inputs.startsWith(CUSTOM_DELIMITER_START)) {
-            throw new IllegalArgumentException("커스텀 형식은 '//'으로 시작해야 합니다.");
+            throw new IllegalArgumentException("커스텀 형식은 '" + CUSTOM_DELIMITER_START + "'으로 시작해야 합니다.");
         }
         int lnIndex = inputs.indexOf(CUSTOM_DELIMITER_END);
         if (lnIndex < 0) {
