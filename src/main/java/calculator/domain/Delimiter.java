@@ -12,18 +12,18 @@ public class Delimiter {
     private static final String CUSTOM_DELIMITER_START = "//";
     private static final String CUSTOM_DELIMITER_END = "\\n";
 
-    public List<String> tokenize(String inputs) {
+    public List<String> detectAndSplit(String inputs) {
         if (isDefault(inputs)) {
-            return defaultTokenize(inputs);
+            return splitByDefaultDelimiter(inputs);
         }
-        return customTokenize(inputs);
+        return splitByCustomDelimiter(inputs);
     }
 
     private boolean isDefault(String inputs) {
         return !inputs.startsWith("//");
     }
 
-    private List<String> defaultTokenize(String inputs) {
+    private List<String> splitByDefaultDelimiter(String inputs) {
         if (inputs.matches(VALIDATE_DEFAULT)) {
             throw new IllegalArgumentException("기본 구분자(" + BASE_DELIMS + ")만 허용됩니다.");
         }
@@ -31,7 +31,7 @@ public class Delimiter {
         return Arrays.stream(inputs.split(DEFAULT_DELIMITER)).toList();
     }
 
-    private List<String> customTokenize(String inputs) {
+    private List<String> splitByCustomDelimiter(String inputs) {
         int lnIndex = validateCustomFormat(inputs);
         char customToken = validateCustomDelimiter(inputs, lnIndex);
         String numbersPart = validateNumberPart(inputs, lnIndex);

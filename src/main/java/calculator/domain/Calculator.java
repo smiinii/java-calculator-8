@@ -14,7 +14,7 @@ public class Calculator {
         if (inputs.isEmpty()) {
             return 0;
         }
-        List<String> tokens = delimiter.tokenize(inputs);
+        List<String> tokens = delimiter.detectAndSplit(inputs);
         return tokens.stream()
                 .map(Digit::new)
                 .mapToInt(Digit::value)
