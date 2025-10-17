@@ -33,8 +33,8 @@ public class Delimiter {
 
     private List<String> splitByCustomDelimiter(String inputs) {
         int lnIndex = validateCustomFormat(inputs);
-        char customToken = validateCustomDelimiter(inputs, lnIndex);
-        String numbersPart = validateNumberPart(inputs, lnIndex);
+        char customToken = extractCustomDelimiter(inputs, lnIndex);
+        String numbersPart = extractNumberPart(inputs, lnIndex);
         String normalized =  normalizeDelimiters(numbersPart, customToken);
 
         validateDelimiterSequence(normalized);
@@ -61,7 +61,7 @@ public class Delimiter {
         return lnIndex;
     }
 
-    private char validateCustomDelimiter(String inputs, int lnIndex) {
+    private char extractCustomDelimiter(String inputs, int lnIndex) {
         int start = CUSTOM_DELIMITER_START.length();
         String customDelimiter = inputs.substring(start, lnIndex);
         if (customDelimiter.length() != 1) {
@@ -75,7 +75,7 @@ public class Delimiter {
         return customToken;
     }
 
-    private String validateNumberPart(String inputs, int lnIndex) {
+    private String extractNumberPart(String inputs, int lnIndex) {
         int startNumberPart = lnIndex + CUSTOM_DELIMITER_END.length();
         if (startNumberPart == inputs.length()) {
             throw new IllegalArgumentException("숫자 부분이 비어있습니다.");
