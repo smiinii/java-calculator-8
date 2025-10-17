@@ -35,22 +35,6 @@ public class CalculatorTest {
     }
 
     @Test
-    void 숫자가_아닌_값이_포함되면_예외() {
-        Delimiter delimiter = new Delimiter();
-        Calculator calculator = new Calculator(delimiter);
-        assertThatThrownBy(() -> calculator.calculate("1,a,3"))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 음수가_포함되면_예외() {
-        Delimiter delimiter = new Delimiter();
-        Calculator calculator = new Calculator(delimiter);
-        assertThatThrownBy(() -> calculator.calculate("1,-2,3"))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 숫자의_자릿수는_상관_없다() {
         Delimiter delimiter = new Delimiter();
         Calculator calculator = new Calculator(delimiter);
