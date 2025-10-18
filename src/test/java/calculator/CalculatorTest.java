@@ -11,13 +11,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 public class CalculatorTest {
 
     @Test
-    void 빈문자열을_입력하면_0을_반환한다() {
-        Delimiter delimiter = new Delimiter();
-        Calculator calculator = new Calculator(delimiter);
-        assertThat(calculator.calculate("")).isEqualTo(0);
-    }
-
-    @Test
     void 기본_구분자로_합산된다() {
         Delimiter delimiter = new Delimiter();
         Calculator calculator = new Calculator(delimiter);

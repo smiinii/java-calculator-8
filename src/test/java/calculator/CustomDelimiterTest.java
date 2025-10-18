@@ -56,10 +56,9 @@ public class CustomDelimiterTest {
     }
 
     @Test
-    void 숫자_부분이_비어있으면_예외() {
+    void 본문_부분이_비어있으면_공백_처리() {
         Delimiter d = new Delimiter();
-        assertThatThrownBy(() -> d.detectAndSplit("//;\\n"))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(d.detectAndSplit("//;\\n")).containsExactly("");
     }
 
     @Test

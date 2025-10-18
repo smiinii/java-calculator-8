@@ -30,6 +30,9 @@ public class Delimiter {
     }
 
     private List<String> splitByDefaultDelimiter(String inputs) {
+        if (inputs.isEmpty()) {
+            return List.of("");
+        }
         assertOnlyDefaultDelims(inputs);
         assertWellFormedSequence(inputs);
         return Arrays.stream(inputs.split(DELIMITER_CLASS)).toList();
@@ -39,8 +42,11 @@ public class Delimiter {
         validateCustomHeaderStart(inputs);
         int lnIndex = findHeaderEndOrThrow(inputs);
 
-        char customDelimiter = extractCustomDelimiter(inputs, lnIndex);
         String body = extractBody(inputs, lnIndex);
+        if (body.isEmpty()) {
+            return List.of("");
+        }
+        char customDelimiter = extractCustomDelimiter(inputs, lnIndex);
         String normalized =  normalizeDelimiters(body, customDelimiter);
 
         assertOnlyDefaultDelims(normalized);
@@ -91,13 +97,13 @@ public class Delimiter {
     private String extractBody(String inputs, int lnIndex) {
         int startNumberPart = lnIndex + CUSTOM_HEADER_END.length();
         if (startNumberPart == inputs.length()) {
-            throw new IllegalArgumentException("본문이 비어있습니다.");
+            return "";
         }
         return inputs.substring(startNumberPart);
     }
 
-    private String normalizeDelimiters(String numbersPart, char customToken) {
+    private String normalizeDelimiters(String body, char customToken) {
         char defaultDelimiter = DEFAULT_DELIMS.charAt(0);
-        return numbersPart.replace(customToken, defaultDelimiter);
+        return body.replace(customToken, defaultDelimiter);
     }
 }

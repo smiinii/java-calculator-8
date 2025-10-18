@@ -11,9 +11,6 @@ public class Calculator {
     }
 
     public int calculate(String inputs) {
-        if (inputs.isEmpty()) {
-            return 0;
-        }
         List<String> tokens = delimiter.detectAndSplit(inputs);
         return tokens.stream()
                 .map(Operand::new)
