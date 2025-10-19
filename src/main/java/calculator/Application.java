@@ -2,11 +2,11 @@ package calculator;
 
 import calculator.domain.Calculator;
 import calculator.domain.Delimiter;
-import calculator.view.IO;
+import calculator.view.IoView;
 
 public class Application {
     public static void main(String[] args) {
-        IO io = new IO();
+        IoView io = new IoView();
         Delimiter delimiter = new Delimiter();
         Calculator calculator = new Calculator(delimiter);
 

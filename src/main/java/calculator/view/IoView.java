@@ -2,7 +2,7 @@ package calculator.view;
 
 import camp.nextstep.edu.missionutils.Console;
 
-public class IO {
+public class IoView {
 
     public String input() {
         System.out.println("덧셈할 문자열을 입력해 주세요.");
