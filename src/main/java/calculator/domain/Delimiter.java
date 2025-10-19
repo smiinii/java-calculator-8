@@ -33,8 +33,8 @@ public class Delimiter {
         if (inputs.isEmpty()) {
             return List.of("");
         }
-        assertOnlyDefaultDelims(inputs);
-        assertWellFormedSequence(inputs);
+        validateOnlyDefaultDelims(inputs);
+        validateWellFormedSequence(inputs);
         return Arrays.stream(inputs.split(DELIMITER_CLASS)).toList();
     }
 
@@ -49,18 +49,18 @@ public class Delimiter {
         char customDelimiter = extractCustomDelimiter(inputs, lnIndex);
         String normalized =  normalizeDelimiters(body, customDelimiter);
 
-        assertOnlyDefaultDelims(normalized);
-        assertWellFormedSequence(normalized);
+        validateOnlyDefaultDelims(normalized);
+        validateWellFormedSequence(normalized);
         return Arrays.stream(normalized.split(DELIMITER_CLASS)).toList();
     }
 
-    private void assertOnlyDefaultDelims(String inputs) {
+    private void validateOnlyDefaultDelims(String inputs) {
         if(inputs.matches(HAS_NON_DEFAULT_PUNCT)) {
             throw new IllegalArgumentException("정해진 구분자 외에 구분자는 사용할 수 없습니다.");
         }
     }
 
-    private void assertWellFormedSequence(String inputs) {
+    private void validateWellFormedSequence(String inputs) {
         if (!inputs.matches(WELL_FORMED_SEQUENCE)) {
             throw new IllegalArgumentException("구분자 사용이 올바르지 않습니다. (선행/후행/연속 금지)");
         }
